@@ -1,0 +1,20 @@
+{
+  "name": "bookstore",
+  "version": "1.0.0",
+  "description": "Book Store front end implemented using React JS, backend implemented using Node JS.",
+  "main": "frontend index.js, backend app.js.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "BookStore"
+  },
+  "keywords": [
+    "React",
+    "JS",
+    "NodeJS"
+  ],
+  "author": "Sajeda Jomaa",
+  "license": "ISC"
+}
