@@ -14,6 +14,9 @@ function AuthForm() {
   const { errors, messages } = data || {};
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
+  const getSubmitLabel = () => {
+    return isSubmitting ? 'Submitting...' : 'Save';
+  };
 
   return (
     <>
@@ -35,7 +38,7 @@ function AuthForm() {
             <p>{messages}</p>
           ) : null}
         </div>
-        
+
         <div className={classes.controlrow}>
           <div className={classes.control}>
             <Input
@@ -66,10 +69,11 @@ function AuthForm() {
             Signup
           </NavLink>
 
+          
           <button
             className={classes.button}
             disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Save'}
+            {getSubmitLabel()}
           </button>
         </div>
 
