@@ -1,8 +1,10 @@
 
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import SearchLogic from '../Search/SearchLogic.js';
 import classes from './ShowAvailableBooks.module.css';
-import { useState } from 'react';
+import defaultImage from "../../assets/139110060-isometric-design-of-books-and-coffee-mug-over-white-background-vector-illustration-removebg-preview.png";
+
 
 export default function ShowAvailableBooks({ booksData, lastImageRef, isLoading }) {
     const navigate = useNavigate();
@@ -40,8 +42,9 @@ export default function ShowAvailableBooks({ booksData, lastImageRef, isLoading 
                                                 </div>
                                             ) : (
                                                 <>
+
                                                     <img
-                                                        src={book.volumeInfo.imageLinks.thumbnail}
+                                                        src={book.volumeInfo.imageLinks.thumbnail || { defaultImage }}
                                                         alt={`Book ${index + 1}`}
                                                         ref={index === (searchResults.length > 0 ? searchResults : booksData).length - 1 ? lastImageRef : null}
                                                     />
