@@ -1,46 +1,32 @@
 
 import { Form, useNavigation, useActionData } from 'react-router-dom';
 import { useInput } from '../../hooks/useInput.js';
-import { isEmail, isNotEmpty, hasMinLength } from '../../services/validation.js';
-
+import { isEmail, isNotEmpty, hasMinLength, isEqualsToOtherValue } from '../../services/validation.js';
+import { useState, useEffect } from 'react';
 import Input from '../Common/Input.js';
 import classes from './signup.module.css';
 
 export default function Signup() {
     const data = useActionData();
+    const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
     const navigation = useNavigation();
 
     const isSubmitting = navigation.state === 'submitting';
-    const { value: emailValue,
-        handleInputChange: handelEmailChange,
-        handleInputBlur: handleEmailBlur,
-        hasError: emailHasError
-    } = useInput('', (value) => isEmail(value) && isNotEmpty(value));
+    const { value: emailValue, handleInputChange: handleEmailChange, handleInputBlur: handleEmailBlur, hasError: emailHasError } = useInput('', (value) => isEmail(value) && isNotEmpty(value));
+    const { value: firstNameValue, handleInputChange: handleFirstNameChange, handleInputBlur: handleFirstNameBlur, hasError: firstNameHasError } = useInput('', (value) => isNotEmpty(value));
+    const { value: lastNameValue, handleInputChange: handleLastNameChange, handleInputBlur: handleLastNameBlur, hasError: lastNameHasError } = useInput('', (value) => isNotEmpty(value));
 
-    const { value: firstNameValue,
-        handleInputChange: handelFirstNameChange,
-        handleInputBlur: handleFirstNameBlur,
-        hasError: firstNameHasError
-    } = useInput('', (value) => isNotEmpty(value));
+    const { value: passwordValue, handleInputBlur: handlePasswordBlur, handleInputChange: handlePasswordChange, hasError: passwordHasError } = useInput('', (value) => hasMinLength(value, 6));
+    const { value: confirmPasswordValue, handleInputBlur: handleConfirmPasswordBlur, handleInputChange: handleConfirmPasswordChange } = useInput('', (value) => hasMinLength(value, 6));
 
-    const { value: lastNameValue,
-        handleInputChange: handelLastNameChange,
-        handleInputBlur: handleLastNameBlur,
-        hasError: lastNameHasError
-    } = useInput('', (value) => isNotEmpty(value));
-
-    const { value: passwordValue,
-        handleInputBlur: handlePasswordBlur,
-        handleInputChange: handlePasswordChange,
-        hasError: passwordHasError
-    } = useInput('', (value) => hasMinLength(value, 6));
-
+    useEffect(() => {
+        setPasswordsAreNotEqual(!isEqualsToOtherValue(passwordValue, confirmPasswordValue));
+    }, [passwordValue, confirmPasswordValue]);
 
     return (
         <>
             <div className={classes.container}>
                 <h1 className={classes.siteName}>Design Books</h1>
-
             </div>
             <Form method="post" className={classes.forAuth}>
                 <h2>Welcome on board!</h2>
@@ -62,7 +48,7 @@ export default function Signup() {
                         name="email"
                         onBlur={handleEmailBlur}
                         error={emailHasError && 'Please enter a valid email.'}
-                        onChange={handelEmailChange}
+                        onChange={handleEmailChange}
                         value={emailValue}
                     />
                 </div>
@@ -87,6 +73,10 @@ export default function Signup() {
                             id="confirm-password"
                             type="password"
                             name="confirm-password"
+                            onChange={handleConfirmPasswordChange}
+                            onBlur={handleConfirmPasswordBlur}
+                            value={confirmPasswordValue}
+                            error={passwordsAreNotEqual && 'Passwords do not match.'}
                         />
                     </div>
                 </div>
@@ -102,7 +92,7 @@ export default function Signup() {
                             name="first-name"
                             onBlur={handleFirstNameBlur}
                             error={lastNameHasError && 'Please enter a valid last name.'}
-                            onChange={handelFirstNameChange}
+                            onChange={handleFirstNameChange}
                             value={firstNameValue} />
                     </div>
 
@@ -114,13 +104,13 @@ export default function Signup() {
                             name="last-name"
                             onBlur={handleLastNameBlur}
                             error={firstNameHasError && 'Please enter a valid first name.'}
-                            onChange={handelLastNameChange}
+                            onChange={handleLastNameChange}
                             value={lastNameValue} />
                     </div>
                 </div>
 
                 <div className={classes.control}>
-                    <label htmlFor="phone">What best describes your role?</label>
+                    <label htmlFor="role">What best describes your role?</label>
                     <select id="role" name="role">
                         <option value="student">Student</option>
                         <option value="teacher">Teacher</option>
@@ -133,22 +123,12 @@ export default function Signup() {
                 <fieldset>
                     <legend>How did you find us?</legend>
                     <div className={classes.control}>
-                        <input
-                            type="checkbox"
-                            id="google"
-                            name="acquisition"
-                            value="google"
-                        />
+                        <input type="checkbox" id="google" name="acquisition" value="google" />
                         <label htmlFor="google">Google</label>
                     </div>
 
                     <div className={classes.control}>
-                        <input
-                            type="checkbox"
-                            id="friend"
-                            name="acquisition"
-                            value="friend"
-                        />
+                        <input type="checkbox" id="friend" name="acquisition" value="friend" />
                         <label htmlFor="friend">Referred by friend</label>
                     </div>
 
@@ -175,5 +155,5 @@ export default function Signup() {
                 </p>
             </Form>
         </>
-    )
+    );
 }
