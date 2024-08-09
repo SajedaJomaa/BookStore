@@ -9,7 +9,12 @@ export const BookProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        localStorage.setItem('purchasedBooks', JSON.stringify(purchasedBooks));
+
+        try {
+            localStorage.setItem('purchasedBooks', JSON.stringify(purchasedBooks));
+        } catch (error) {
+            console.error('Error saving to localStorage:', error);
+        }
     }, [purchasedBooks]);
 
     const buyBook = (book) => {
@@ -24,26 +29,10 @@ export const BookProvider = ({ children }) => {
         });
     };
 
-    const incrementBook = (bookId) => {
-        setPurchasedBooks((prevBooks) =>
-            prevBooks.map(item =>
-                item.id === bookId ? { ...item, quantity: item.quantity + 1 } : item
-            )
-        );
-    };
 
-    const decrementBook = (bookId) => {
-        setPurchasedBooks((prevBooks) =>
-            prevBooks
-                .map(item =>
-                    item.id === bookId ? { ...item, quantity: item.quantity - 1 } : item
-                )
-                .filter(item => item.quantity > 0)
-        );
-    };
 
     return (
-        <BookContext.Provider value={{ purchasedBooks, buyBook, incrementBook, decrementBook }}>
+        <BookContext.Provider value={{ purchasedBooks, buyBook }}>
             {children}
         </BookContext.Provider>
     );
