@@ -7,9 +7,11 @@ export default function BookList() {
     const [booksData, setBooksData] = useState([]);
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     const observer = useRef(null);
     const fetchBookData = async (page) => {
         setIsLoading(true);
+        setError(null);
         try {
             const resData = await fetchAvailableBooks(page);
             const newBooksData = resData.items.map(item => ({
@@ -21,6 +23,7 @@ export default function BookList() {
             setBooksData(prevData => [...prevData, ...newBooksData]);
         } catch (error) {
             console.error('Error fetching book data:', error.message);
+            setError('Error fetching book data. Please try again later.');
         } finally {
             setIsLoading(false);
         }
@@ -44,7 +47,13 @@ export default function BookList() {
     }, [isLoading]);
 
     return (
+
         <div>
+            {isLoading && <div>Loading books...</div>}
+            {error && <div>{error}</div>}
+            {booksData.length === 0 && !isLoading && !error && (
+                <div>No books available.</div>
+            )}
             <ShowAvailableBooks booksData={booksData} lastImageRef={lastImageRef} isLoading={isLoading} />
         </div>
     );
