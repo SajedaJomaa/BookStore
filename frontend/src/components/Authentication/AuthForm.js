@@ -9,6 +9,9 @@ import classes from './AuthForm.module.css';
 
 function AuthForm() {
   const data = useActionData();
+  console.log(data);
+
+  const { errors, messages } = data || {};
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
 
@@ -20,14 +23,19 @@ function AuthForm() {
       </div>
       <Form method="post" className={classes.forAuth}>
         <h1>LogIn</h1>
-        {data && data.errors && (
-          <ul>
-            {Object.values(data.errors).map((err) => (
-              <li key={err}>{err}</li>
-            ))}
-          </ul>
-        )}
-        {data && data.message && <p>{data.message}</p>}
+
+        <div>
+          {errors && Object.keys(errors).length > 0 ? (
+            <ul>
+              {Object.values(errors).map((err) => (
+                <li key={err}>{err}</li>
+              ))}
+            </ul>
+          ) : messages ? (
+            <p>{messages}</p>
+          ) : null}
+        </div>
+        
         <div className={classes.controlrow}>
           <div className={classes.control}>
             <Input
